@@ -1,0 +1,20 @@
+🎉 AI Dungeon Master is RUNNING!
+
+✅ Backend: http://localhost:8001 (Flask API)
+✅ Frontend: http://localhost:3000 (React App)
+
+📝 How it works:
+1. Type a message in the chat
+2. Message goes to your Airia agent
+3. Get an epic dungeon master story back!
+
+⚠️ IMPORTANT: Add your Airia credentials to .env file:
+   AIRIA_API_KEY=your-airia-api-key-here
+   AIRIA_USER_ID=your-user-id-here
+
+🚀 Open your browser to: http://localhost:3000
+
+Try typing something like:
+"You wake up in a mysterious cave filled with glowing crystals..."
+
+📚 For detailed setup: See AIRIA_SETUP.md
