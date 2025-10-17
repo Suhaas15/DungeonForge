@@ -625,17 +625,99 @@ body {
 }
 
 /* Scene Images */
-.scene-image {
-  margin-top: 15px;
-  text-align: center;
+.scene-image-container {
+  margin: 20px 0;
+  padding: 15px;
+  background: linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%);
+  border: 3px solid #8B4513;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.scene-image img {
+.scene-image-label {
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 1.1em;
+  letter-spacing: 1px;
+}
+
+.scene-image {
+  width: 100%;
   max-width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  border: 2px solid #8B4513;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid #654321;
+  display: block;
+  margin: 0 auto;
+  background: #fff;
+  transition: transform 0.3s ease;
+}
+
+.scene-image:hover {
+  transform: scale(1.02);
+}
+
+/* Audio Controls */
+.audio-controls {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.audio-button {
+  background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(155, 89, 182, 0.4);
+  background: linear-gradient(135deg, #A569BD 0%, #9B59B6 100%);
+}
+
+.audio-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.audio-button-small {
+  background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(155, 89, 182, 0.3);
+  margin-top: 10px;
+}
+
+.audio-button-small:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+  background: linear-gradient(135deg, #A569BD 0%, #9B59B6 100%);
+}
+
+.audio-button-small:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Input Area */

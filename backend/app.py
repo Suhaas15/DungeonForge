@@ -9,6 +9,7 @@ import json
 from elevenlabs import ElevenLabs, VoiceSettings, DialogueInput
 import io
 import re
+import threading
 
 # Load .env from parent directory (root of project)
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -28,8 +29,8 @@ if ELEVENLABS_API_KEY:
     elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 
 # Stack-AI Image Generation Configuration
-STACK_AI_API_URL = "https://api.stack-ai.com/inference/v0/run/74329701-0f1c-429f-94f2-1a8bff522ae5/68f2b40560ba42fb86bdcc9b"
-STACK_AI_API_KEY = "2cca805e-ef0f-4c2c-990a-389db4d098d3"
+STACK_AI_API_URL = os.getenv('STACK_AI_API_URL')
+STACK_AI_API_KEY = os.getenv('STACK_AI_API_KEY')
 
 # Voice IDs for different characters/roles
 VOICE_ROLES = {
@@ -44,6 +45,9 @@ VOICE_ROLES = {
 lobbies = {}  # {lobby_id: lobby_data}
 user_sessions = {}  # {user_id: lobby_id}
 starting_lobbies = set()  # Track lobbies currently starting
+
+# Image generation cache
+image_cache = {}  # {request_id: image_url}
 
 def call_airia_agent(user_input):
     """Call Airia agent and return the response"""
@@ -76,9 +80,22 @@ def call_airia_agent(user_input):
         print(f"Error calling Airia agent: {e}")
         return None
 
+def generate_scene_image_async(summary_text, user_id, result_dict, key):
+    """Generate scene image in background thread"""
+    try:
+        image_url = generate_scene_image(summary_text, user_id)
+        result_dict[key] = image_url
+    except Exception as e:
+        print(f"[Stack-AI] Background image generation failed: {e}")
+        result_dict[key] = None
+
 def generate_scene_image(summary_text, user_id="default"):
     """Call Stack-AI image generation API with the scene summary"""
     try:
+        if not STACK_AI_API_URL or not STACK_AI_API_KEY:
+            print(f"[Stack-AI] API URL or KEY not configured")
+            return None
+            
         headers = {
             'Authorization': f'Bearer {STACK_AI_API_KEY}',
             'Content-Type': 'application/json'
@@ -487,9 +504,10 @@ def start_lobby():
                 'username': user_data['username'],
                 'options': option_templates[template_index]
             }
-        # Generate scene image from summary
+        # Generate scene image from summary (wait for completion)
         scene_image = None
         if summary50:
+            print("[Stack-AI] Waiting for image generation to complete...")
             scene_image = generate_scene_image(summary50, lobby_id)
         
         # Update lobby state
@@ -641,9 +659,10 @@ def get_story():
         if not story:
             story = "I'm having trouble generating the story right now. Please try again."
         
-        # Generate scene image from summary
+        # Generate scene image from summary (wait for completion)
         scene_image = None
         if summary50:
+            print("[Stack-AI] Waiting for image generation to complete...")
             scene_image = generate_scene_image(summary50, user_id if user_id else "solo_player")
         
         # Calculate remaining events after this one
@@ -773,9 +792,10 @@ def submit_choice():
                     'options': option_templates[template_index]
                 }
             
-            # Generate scene image from summary
+            # Generate scene image from summary (wait for completion)
             scene_image = None
             if summary50:
+                print("[Stack-AI] Waiting for image generation to complete...")
                 scene_image = generate_scene_image(summary50, lobby_id)
             
             # Add collaborative story message
@@ -907,22 +927,15 @@ def text_to_speech():
         # Parse text and create dialogue inputs with multiple voices
         dialogue_inputs = parse_text_for_dialogue(text)
         
-        # Generate audio using ElevenLabs text-to-dialogue (multivoice)
-        if len(dialogue_inputs) > 1:
-            # Use multivoice for complex dialogue
-            audio_generator = elevenlabs_client.text_to_dialogue.convert(
-                inputs=dialogue_inputs,
-                output_format="mp3_44100_128",
-                model_id="eleven_multilingual_v2"
-            )
-        else:
-            # Fallback to single voice for simple text
-            audio_generator = elevenlabs_client.text_to_speech.convert(
-                text=text,
-                voice_id=VOICE_ROLES['narrator'],
-                model_id="eleven_multilingual_v2",
-                output_format="mp3_44100_128",
-            )
+        # Generate audio using ElevenLabs
+        # Note: text-to-dialogue requires v3 models, so we'll use single voice with turbo model
+        # For now, use single narrator voice for simplicity and speed
+        audio_generator = elevenlabs_client.text_to_speech.convert(
+            text=text,
+            voice_id=VOICE_ROLES['narrator'],
+            model_id="eleven_turbo_v2_5",
+            output_format="mp3_44100_128",
+        )
         
         # Collect the audio stream into bytes
         audio_bytes = b''

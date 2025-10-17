@@ -10,6 +10,10 @@ function App() {
   const [options, setOptions] = useState([]);
   const [eventsRemaining, setEventsRemaining] = useState(10);
   const [storyComplete, setStoryComplete] = useState(false);
+  const [sceneImage, setSceneImage] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [latestStory, setLatestStory] = useState('');
   
   // Lobby state
   const [gameMode, setGameMode] = useState('menu'); // 'menu', 'solo', 'lobby'
@@ -67,6 +71,8 @@ function App() {
         setOptions(Array.isArray(data.options) ? data.options : []);
         setEventsRemaining(data.eventsRemaining || 0);
         setStoryComplete(data.storyComplete || false);
+        setSceneImage(data.scene_image || null);
+        setLatestStory(data.story); // Save for audio playback
       } else {
         setError(data.error || 'Something went wrong');
       }
@@ -88,6 +94,61 @@ function App() {
       if (!storyComplete) {
         sendMessage();
       }
+    }
+  };
+
+  const playStoryAudio = async () => {
+    if (!latestStory) {
+      setError('No story to read');
+      return;
+    }
+
+    // Stop current audio if playing
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    setIsPlayingAudio(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:8001/text-to-speech', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: latestStory }),
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        audio.onended = () => {
+          setIsPlayingAudio(false);
+          setCurrentAudio(null);
+        };
+        
+        audio.onerror = () => {
+          setError('Failed to play audio');
+          setIsPlayingAudio(false);
+          setCurrentAudio(null);
+        };
+
+        setCurrentAudio(audio);
+        await audio.play();
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to generate audio');
+        setIsPlayingAudio(false);
+      }
+    } catch (err) {
+      setError('Failed to connect to audio service');
+      setIsPlayingAudio(false);
     }
   };
 
@@ -208,6 +269,17 @@ function App() {
               </div>
             ))}
 
+            {latestStory && !isLoading && (
+              <div className="audio-controls">
+                <button 
+                  className="audio-button"
+                  onClick={playStoryAudio}
+                  disabled={isPlayingAudio && !currentAudio}
+                >
+                  {isPlayingAudio ? '⏸️ Stop Reading' : '🎤 Listen to Story'}
+                </button>
+              </div>
+            )}
 
             {isLoading && (
               <div className="loading">
@@ -240,6 +312,20 @@ function App() {
                 <div className="message-content story-content">{msg.content}</div>
               </div>
             ))}
+
+            {sceneImage && (
+              <div className="scene-image-container">
+                <div className="scene-image-label">🖼️ Current Scene</div>
+                <img 
+                  src={sceneImage} 
+                  alt="Scene visualization" 
+                  className="scene-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
 
             {options.length > 0 && !storyComplete && (
               <div className="options-panel">

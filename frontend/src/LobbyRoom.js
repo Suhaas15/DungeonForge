@@ -7,6 +7,8 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState('');
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   // Poll lobby state
   useEffect(() => {
@@ -118,6 +120,61 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
     } catch (err) {
       console.error('Failed to leave lobby:', err);
       onLeaveLobby(); // Leave anyway
+    }
+  };
+
+  const playStoryAudio = async (storyText) => {
+    if (!storyText) {
+      setError('No story to read');
+      return;
+    }
+
+    // Stop current audio if playing
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    setIsPlayingAudio(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:8001/text-to-speech', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: storyText }),
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        audio.onended = () => {
+          setIsPlayingAudio(false);
+          setCurrentAudio(null);
+        };
+        
+        audio.onerror = () => {
+          setError('Failed to play audio');
+          setIsPlayingAudio(false);
+          setCurrentAudio(null);
+        };
+
+        setCurrentAudio(audio);
+        await audio.play();
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to generate audio');
+        setIsPlayingAudio(false);
+      }
+    } catch (err) {
+      setError('Failed to connect to audio service');
+      setIsPlayingAudio(false);
     }
   };
 
@@ -243,6 +300,28 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
                   <div>
                     <div className="message-header">🎭 Collaborative Story</div>
                     <div className="message-content">{msg.content}</div>
+                    <div className="audio-controls">
+                      <button 
+                        className="audio-button-small"
+                        onClick={() => playStoryAudio(msg.content)}
+                        disabled={isPlayingAudio && !currentAudio}
+                      >
+                        {isPlayingAudio ? '⏸️ Stop' : '🎤 Listen'}
+                      </button>
+                    </div>
+                    {msg.scene_image && (
+                      <div className="scene-image-container">
+                        <div className="scene-image-label">🖼️ Scene Visualization</div>
+                        <img 
+                          src={msg.scene_image} 
+                          alt="Scene visualization" 
+                          className="scene-image"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                     {msg.user_choices && (
                       <div className="user-choices">
                         <h4>Player Choices:</h4>
@@ -258,6 +337,19 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
                   <div>
                     <div className="message-header">👤 {msg.username}</div>
                     <div className="message-content">{msg.content}</div>
+                    {msg.scene_image && (
+                      <div className="scene-image-container">
+                        <div className="scene-image-label">🖼️ Scene Visualization</div>
+                        <img 
+                          src={msg.scene_image} 
+                          alt="Scene visualization" 
+                          className="scene-image"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
