@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
+import { API_URL } from './config';
 
 function Lobby({ onJoinLobby, onCreateLobby }) {
   const [mode, setMode] = useState('menu'); // 'menu', 'create', 'join'
@@ -14,7 +15,7 @@ function Lobby({ onJoinLobby, onCreateLobby }) {
     }
 
     try {
-      const response = await fetch('http://localhost:8001/lobby/create', {
+      const response = await fetch(`${API_URL}/lobby/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ function Lobby({ onJoinLobby, onCreateLobby }) {
     }
 
     try {
-      const response = await fetch('http://localhost:8001/lobby/join', {
+      const response = await fetch(`${API_URL}/lobby/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

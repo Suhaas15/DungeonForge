@@ -15,7 +15,10 @@ import threading
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 app = Flask(__name__)
-CORS(app)
+
+# CORS configuration - allow frontend URL from environment or localhost
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+CORS(app, resources={r"/*": {"origins": [FRONTEND_URL, "http://localhost:3000"]}})
 
 # Initialize Airia configuration
 AIRIA_API_KEY = os.getenv('AIRIA_API_KEY')
@@ -63,7 +66,7 @@ def call_airia_agent(user_input):
             "Content-Type": "application/json"
         }
         
-        response = requests.post(AIRIA_PIPELINE_URL, headers=headers, data=payload, timeout=30)
+        response = requests.post(AIRIA_PIPELINE_URL, headers=headers, data=payload, timeout=90)
         
         if response.status_code == 200:
             response_data = response.json()
@@ -601,7 +604,7 @@ def get_story():
         
         if story_complete:
             return pretty_json({
-                'story': "🎉 **THE END** 🎉\n\nYour epic collaborative adventure has reached its conclusion! All players have completed their journey together.",
+                'story': "**THE END**\n\nYour epic collaborative adventure has reached its conclusion! All players have completed their journey together.",
                 'summary50': "Collaborative story completed!",
                 'options': [],
                 'eventsRemaining': 0,
@@ -613,7 +616,7 @@ def get_story():
         # Check if story should end
         if events_remaining <= 0:
             return pretty_json({
-                'story': "🎉 **THE END** 🎉\n\nYour epic adventure has reached its conclusion! You have completed all 10 events of your story. Thank you for playing!",
+                'story': "**THE END**\n\nYour epic adventure has reached its conclusion! You have completed all 10 events of your story. Thank you for playing!",
                 'summary50': "Story completed! All 10 events finished.",
                 'options': [],
                 'eventsRemaining': 0,
@@ -960,4 +963,6 @@ def text_to_speech():
         return pretty_json({'error': f'Failed to generate speech: {str(e)}'}, 500)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True)
+    port = int(os.getenv('PORT', 8001))
+    debug = os.getenv('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug)

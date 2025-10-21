@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
+import { API_URL } from './config';
 
 function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
   const [lobby, setLobby] = useState(null);
@@ -15,7 +16,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
   useEffect(() => {
     const pollLobby = async () => {
       try {
-        const response = await fetch(`http://localhost:8001/lobby/${lobbyId}`);
+        const response = await fetch(`${API_URL}/lobby/${lobbyId}`);
         const data = await response.json();
         
         if (response.ok) {
@@ -36,7 +37,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
 
   const toggleReady = async () => {
     try {
-      const response = await fetch('http://localhost:8001/lobby/ready', {
+      const response = await fetch(`${API_URL}/lobby/ready`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8001/lobby/choice', {
+      const response = await fetch(`${API_URL}/lobby/choice`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
 
   const leaveLobby = async () => {
     try {
-      await fetch('http://localhost:8001/lobby/leave', {
+      await fetch(`${API_URL}/lobby/leave`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +143,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8001/text-to-speech', {
+      const response = await fetch(`${API_URL}/text-to-speech`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -267,7 +268,7 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
                         setIsStarting(true);
                         setError('');
                         try {
-                          const response = await fetch('http://localhost:8001/lobby/start', {
+                          const response = await fetch(`${API_URL}/lobby/start`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ lobby_id: lobbyId, user_id: userId })

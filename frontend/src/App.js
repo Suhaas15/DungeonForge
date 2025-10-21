@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { IoArrowBack } from 'react-icons/io5';
 import Lobby from './Lobby';
 import LobbyRoom from './LobbyRoom';
+import { API_URL } from './config';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -56,7 +57,7 @@ function App() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8001/story', {
+      const response = await fetch(`${API_URL}/story`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ function App() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8001/text-to-speech', {
+      const response = await fetch(`${API_URL}/text-to-speech`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
