@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { IoArrowBack } from 'react-icons/io5';
 
 function Lobby({ onJoinLobby, onCreateLobby }) {
   const [mode, setMode] = useState('menu'); // 'menu', 'create', 'join'
@@ -64,93 +65,104 @@ function Lobby({ onJoinLobby, onCreateLobby }) {
   };
 
   return (
-    <div className="lobby-container">
-      <div className="lobby-card">
-        <h2>🎭 Collaborative Story Lobby</h2>
-        <p>Join up to 3 players in an epic collaborative storytelling adventure!</p>
+    <div className="book-container">
+      <div className="open-book lobby-book">
+        <div className="book-spine"></div>
         
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
-
-        {mode === 'menu' && (
-          <div className="lobby-menu">
-            <div className="username-input">
-              <input
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                maxLength={20}
-              />
+        <div className="book-pages lobby-pages">
+          <div className="lobby-page-full">
+            <div className="page-header">
+              <div className="page-title">Collaborative Adventure</div>
             </div>
             
-            <div className="menu-buttons">
-              <button 
-                className="create-button"
-                onClick={() => setMode('create')}
-                disabled={!username.trim()}
-              >
-                🏰 Create New Lobby
-              </button>
-              <button 
-                className="join-button"
-                onClick={() => setMode('join')}
-                disabled={!username.trim()}
-              >
-                🚪 Join Existing Lobby
-              </button>
+            <div className="lobby-content">
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              {mode === 'menu' && (
+                <div className="lobby-menu">
+                  <p className="lobby-description">Join up to 3 players in an epic collaborative storytelling adventure!</p>
+                  
+                  <div className="username-input">
+                    <input
+                      type="text"
+                      placeholder="Enter your username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      maxLength={20}
+                    />
+                  </div>
+                  
+                  <div className="menu-buttons">
+                    <button 
+                      className="create-button"
+                      onClick={() => setMode('create')}
+                      disabled={!username.trim()}
+                    >
+                      🏰 Create New Lobby
+                    </button>
+                    <button 
+                      className="join-button"
+                      onClick={() => setMode('join')}
+                      disabled={!username.trim()}
+                    >
+                      🚪 Join Existing Lobby
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {mode === 'create' && (
+                <div className="create-lobby">
+                  <h3>Create New Lobby</h3>
+                  <p>You'll be the host and can invite others with your lobby code.</p>
+                  <button 
+                    className="confirm-button"
+                    onClick={handleCreateLobby}
+                  >
+                    Start Adventure
+                  </button>
+                  <button 
+                    className="back-button"
+                    onClick={() => setMode('menu')}
+                  >
+                    <IoArrowBack /> Back
+                  </button>
+                </div>
+              )}
+
+              {mode === 'join' && (
+                <div className="join-lobby">
+                  <h3>Join Existing Lobby</h3>
+                  <div className="lobby-code-input">
+                    <input
+                      type="text"
+                      placeholder="Enter lobby code (e.g., ABC12345)"
+                      value={lobbyCode}
+                      onChange={(e) => setLobbyCode(e.target.value.toUpperCase())}
+                      maxLength={8}
+                    />
+                  </div>
+                  <button 
+                    className="confirm-button"
+                    onClick={handleJoinLobby}
+                  >
+                    Join Lobby
+                  </button>
+                  <button 
+                    className="back-button"
+                    onClick={() => setMode('menu')}
+                  >
+                    <IoArrowBack /> Back
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        )}
-
-        {mode === 'create' && (
-          <div className="create-lobby">
-            <h3>Create New Lobby</h3>
-            <p>You'll be the host and can invite others with your lobby code.</p>
-            <button 
-              className="confirm-button"
-              onClick={handleCreateLobby}
-            >
-              🎮 Start Adventure
-            </button>
-            <button 
-              className="back-button"
-              onClick={() => setMode('menu')}
-            >
-              ← Back
-            </button>
-          </div>
-        )}
-
-        {mode === 'join' && (
-          <div className="join-lobby">
-            <h3>Join Existing Lobby</h3>
-            <div className="lobby-code-input">
-              <input
-                type="text"
-                placeholder="Enter lobby code (e.g., ABC12345)"
-                value={lobbyCode}
-                onChange={(e) => setLobbyCode(e.target.value.toUpperCase())}
-                maxLength={8}
-              />
-            </div>
-            <button 
-              className="confirm-button"
-              onClick={handleJoinLobby}
-            >
-              🚪 Join Lobby
-            </button>
-            <button 
-              className="back-button"
-              onClick={() => setMode('menu')}
-            >
-              ← Back
-            </button>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

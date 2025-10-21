@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { IoArrowBack } from 'react-icons/io5';
 import Lobby from './Lobby';
 import LobbyRoom from './LobbyRoom';
 
@@ -20,6 +21,13 @@ function App() {
   const [lobbyId, setLobbyId] = useState(null);
   const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('');
+  
+  // Set menu background image
+  useEffect(() => {
+    if (gameMode === 'menu') {
+      document.querySelector('.game-menu')?.style.setProperty('background-image', `url(${process.env.PUBLIC_URL}/bg.png)`);
+    }
+  }, [gameMode]);
   
   const leftPageRef = useRef(null);
   const rightPageRef = useRef(null);
@@ -186,17 +194,17 @@ function App() {
     return (
       <div className="game-menu">
         <div className="menu-container">
-          <h1>🎭 Dungeon & Dragons AI</h1>
+          <h1>Dungeon & Dragons AI</h1>
           <p>Choose your adventure style:</p>
           
           <div className="menu-options">
             <button className="menu-button solo-button" onClick={startSoloGame}>
-              🎮 Solo Adventure
+              Single Player
               <span>Play alone with AI Dungeon Master</span>
             </button>
             
             <button className="menu-button lobby-button" onClick={() => setGameMode('lobby-menu')}>
-              👥 Collaborative Story
+              Co-op Lobby
               <span>Join up to 3 players in shared adventure</span>
             </button>
           </div>
@@ -230,9 +238,9 @@ function App() {
     <div className="book-container">
       <div className="game-header">
         <button className="back-to-menu" onClick={() => setGameMode('menu')}>
-          ← Back to Menu
+          <IoArrowBack />
         </button>
-        <h3>Solo Adventure Mode</h3>
+        <h3>Menu</h3>
       </div>
       
       <div className="open-book">
@@ -242,7 +250,7 @@ function App() {
           {/* Left Page - AI Dungeon Master */}
           <div className="left-page">
             <div className="page-header">
-              <div className="page-title">🎭 The Dungeon Master's Tale</div>
+              <div className="page-title">The Dungeon Master's Tale</div>
               {eventsRemaining > 0 && (
                 <div className="events-counter">
                   Events Remaining: {eventsRemaining}
@@ -250,7 +258,7 @@ function App() {
               )}
               {storyComplete && (
                 <div className="story-complete">
-                  🎉 Story Complete! 🎉
+                  Story Complete!
                 </div>
               )}
             </div>
@@ -264,7 +272,7 @@ function App() {
 
             {aiMessages.map((msg, index) => (
               <div key={index} className="message ai-message">
-                <div className="message-label">🎭 Dungeon Master</div>
+                <div className="message-label">Dungeon Master</div>
                 <div className="message-content story-content">{msg.content}</div>
               </div>
             ))}
@@ -276,14 +284,14 @@ function App() {
                   onClick={playStoryAudio}
                   disabled={isPlayingAudio && !currentAudio}
                 >
-                  {isPlayingAudio ? '⏸️ Stop Reading' : '🎤 Listen to Story'}
+                  {isPlayingAudio ? 'Stop Reading' : 'Listen to Story'}
                 </button>
               </div>
             )}
 
             {isLoading && (
               <div className="loading">
-                🎭 The Dungeon Master is crafting your story...
+                The Dungeon Master is crafting your story...
               </div>
             )}
 
@@ -293,7 +301,7 @@ function App() {
           {/* Right Page - User Input */}
           <div className="right-page">
             <div className="page-header">
-              <div className="page-title">📝 Your Adventure</div>
+              <div className="page-title">Your Adventure</div>
             </div>
 
             {userMessages.length === 0 && (
@@ -308,14 +316,14 @@ function App() {
 
             {userMessages.map((msg, index) => (
               <div key={index} className="message user-message">
-                <div className="message-label">🗡️ You</div>
+                <div className="message-label">You</div>
                 <div className="message-content story-content">{msg.content}</div>
               </div>
             ))}
 
             {sceneImage && (
               <div className="scene-image-container">
-                <div className="scene-image-label">🖼️ Current Scene</div>
+                <div className="scene-image-label">Current Scene</div>
                 <img 
                   src={sceneImage} 
                   alt="Scene visualization" 
@@ -366,7 +374,7 @@ function App() {
                 onClick={() => sendMessage()} 
                 disabled={!inputValue.trim() || isLoading || storyComplete}
               >
-                📝 Continue Story
+                Continue Story
               </button>
             </div>
           </div>
