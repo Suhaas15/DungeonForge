@@ -17,8 +17,24 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 app = Flask(__name__)
 
 # CORS configuration - allow frontend URL from environment or localhost
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
-CORS(app, resources={r"/*": {"origins": [FRONTEND_URL, "http://localhost:3000"]}})
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
+# Allow both the configured frontend and localhost, plus Render domains
+allowed_origins = [
+    FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:3001"
+]
+# Also allow all Render URLs during development
+if 'onrender.com' in FRONTEND_URL:
+    allowed_origins.append("https://dungeonforge-contenthack2025-1.onrender.com")
+    
+CORS(app, 
+     resources={r"/*": {
+         "origins": allowed_origins,
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type"]
+     }},
+     supports_credentials=True)
 
 # Initialize Airia configuration
 AIRIA_API_KEY = os.getenv('AIRIA_API_KEY')
