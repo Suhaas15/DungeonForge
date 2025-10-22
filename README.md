@@ -151,7 +151,8 @@ npm start
 
 ## 🪶 **Credits**
 
-Built for **Content Hack 2025** by  
+Built for **AI Agents Hack - The future of Agents** by  
 **Gaurav Hungund**, **Onkar Bedekar**,**Sriram Madduri**,**Suhaas Srungavarapu** ⚔️  
+(Won 3rd Prize Sponsored by Airia!!!)
 
 > “In every line of code lies a story waiting to be told.”
