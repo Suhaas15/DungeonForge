@@ -94,6 +94,10 @@ function Lobby({ onJoinLobby, onCreateLobby }) {
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       maxLength={20}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
                     />
                   </div>
                   
@@ -145,6 +149,10 @@ function Lobby({ onJoinLobby, onCreateLobby }) {
                       value={lobbyCode}
                       onChange={(e) => setLobbyCode(e.target.value.toUpperCase())}
                       maxLength={8}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="characters"
+                      spellCheck="false"
                     />
                   </div>
                   <button 

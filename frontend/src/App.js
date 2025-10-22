@@ -23,10 +23,16 @@ function App() {
   const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('');
   
-  // Set menu background image
+  // Set menu background image and handle mobile viewport
   useEffect(() => {
     if (gameMode === 'menu') {
       document.querySelector('.game-menu')?.style.setProperty('background-image', `url(${process.env.PUBLIC_URL}/bg.png)`);
+    }
+    
+    // Set viewport meta tag for mobile
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
     }
   }, [gameMode]);
   
@@ -368,6 +374,10 @@ function App() {
               onKeyPress={handleKeyPress}
               placeholder={storyComplete ? "Story complete! Start a new adventure by refreshing the page." : "What happens next in your adventure? Describe your actions, set the scene, or continue the story..."}
               disabled={isLoading || storyComplete}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
             />
             <div className="button-group">
               <button 

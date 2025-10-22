@@ -21,6 +21,8 @@ body {
   color: var(--text-dark);
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Font utility classes */
@@ -217,6 +219,9 @@ body {
   transition: all 0.3s ease;
   display: inline-block;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  min-height: 44px; /* Minimum touch target size */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .menu-button:hover {
@@ -852,6 +857,9 @@ body {
   border-radius: 8px;
   text-align: left;
   cursor: pointer;
+  min-height: 44px; /* Minimum touch target size */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .option-button:hover {
@@ -992,38 +1000,531 @@ body {
   color: #654321;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Mobile-First Responsive Design */
+
+/* Small Mobile Devices (320px - 480px) */
+@media (max-width: 480px) {
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+  .book-container {
+    padding: 10px;
+  }
+  
   .open-book {
-    width: 95%;
-    height: 85vh;
+    width: 100%;
+    min-height: 90vh;
+    border-radius: 15px;
+  }
+  
+  .book-spine {
+    display: none; /* Hide spine on very small screens */
   }
   
   .book-pages {
     flex-direction: column;
+    min-height: 80vh;
+    margin: 5px;
+    border-radius: 10px;
   }
   
   .left-page, .right-page {
     flex: none;
-    height: 50%;
+    height: auto;
+    min-height: 40vh;
+    padding: 15px;
     border-right: none;
     border-bottom: 2px solid #DDD;
   }
   
   .left-page {
-    border-right: none;
+    border-bottom: 2px solid #DDD;
   }
   
   .right-page {
     border-bottom: none;
   }
   
+  .page-header {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  
+  .page-title {
+    font-size: 1em;
+    padding: 0 15px;
+  }
+  
+  .events-counter, .story-complete {
+    font-size: 0.8em;
+    padding: 4px 12px;
+    margin-top: 8px;
+  }
+  
+  .message {
+    margin-bottom: 15px;
+    padding: 15px;
+  }
+  
+  .message-label {
+    font-size: 0.8em;
+  }
+  
+  .story-content {
+    font-size: 14px;
+    line-height: 1.6;
+    text-indent: 15px;
+  }
+  
+  .scene-image-container {
+    margin: 15px 0;
+    padding: 10px;
+  }
+  
+  .scene-image-label {
+    font-size: 1em;
+    margin-bottom: 8px;
+  }
+  
+  .options-panel {
+    margin: 8px 15px 15px 15px;
+    padding: 12px;
+  }
+  
+  .options-title {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+  
+  .option-button {
+    padding: 12px 10px;
+    font-size: 0.9em;
+  }
+  
+  .input-area {
+    margin: 15px;
+    padding: 15px;
+  }
+  
   .input-container {
     flex-direction: column;
+    gap: 10px;
+  }
+  
+  .input-container textarea {
+    min-height: 80px;
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  .button-group {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .input-container button {
+    padding: 12px 16px;
+    font-size: 0.9em;
+    flex: 1;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .audio-button {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+  
+  .audio-button-small {
+    padding: 6px 12px;
+    font-size: 0.8em;
+  }
+  
+  /* Game Header Mobile */
+  .game-header {
+    padding: 15px;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .back-to-menu {
+    font-size: 20px;
+    padding: 6px;
+  }
+  
+  .game-header h3 {
+    font-size: 1.1em;
+  }
+  
+  /* Menu Mobile */
+  .game-menu {
+    padding-bottom: 15vh;
+  }
+  
+  .menu-options {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .menu-button {
+    width: 100%;
+    max-width: 280px;
+    padding: 15px 24px;
+    font-size: 1em;
+  }
+  
+  /* Lobby Mobile */
+  .lobby-page-full {
+    padding: 20px;
+  }
+  
+  .lobby-description {
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+  
+  .username-input input,
+  .lobby-code-input input {
+    padding: 12px;
+    font-size: 1em;
+  }
+  
+  .menu-buttons {
+    gap: 12px;
+  }
+  
+  .create-button,
+  .join-button,
+  .confirm-button {
+    padding: 12px 24px;
+    font-size: 1em;
+  }
+  
+  .back-button {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+  
+  /* Lobby Room Mobile */
+  .lobby-room-book {
+    max-width: 100%;
+  }
+  
+  .lobby-stats-header {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8em;
+  }
+  
+  .lobby-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .players-section,
+  .ready-section,
+  .story-section {
+    padding: 15px 0;
+  }
+  
+  .players-section h3,
+  .ready-section h3,
+  .story-section h3 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+  }
+  
+  .player {
+    padding: 10px;
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+  
+  .player-name {
+    font-size: 0.9em;
+  }
+  
+  .player-status {
+    font-size: 0.8em;
+  }
+  
+  .ready-button {
+    padding: 12px 24px;
+    font-size: 1em;
+    width: 100%;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .start-button {
+    padding: 12px 24px;
+    font-size: 1em;
+    width: 100%;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .story-messages {
+    max-height: 300px;
+  }
+  
+  .story-message {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .message-header {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+  
+  .message-content {
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+  
+  .choice-options {
+    gap: 8px;
+  }
+  
+  .choice-button {
+    padding: 12px;
+    font-size: 0.9em;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .submit-choice-button {
+    padding: 12px 24px;
+    font-size: 1em;
+    width: 100%;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .waiting-player {
+    padding: 8px;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  
+  .story-complete {
+    padding: 20px;
+  }
+  
+  .story-complete h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  
+  .new-adventure-button {
+    padding: 12px 24px;
+    font-size: 1em;
+    width: 100%;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+/* Medium Mobile Devices (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .book-container {
+    padding: 15px;
+  }
+  
+  .open-book {
+    width: 95%;
+    min-height: 85vh;
+  }
+  
+  .book-pages {
+    flex-direction: column;
+    min-height: 70vh;
+  }
+  
+  .left-page, .right-page {
+    flex: none;
+    height: auto;
+    min-height: 45vh;
+    padding: 20px;
+  }
+  
+  .page-title {
+    font-size: 1.1em;
+  }
+  
+  .message {
+    padding: 18px;
+  }
+  
+  .story-content {
+    font-size: 15px;
+  }
+  
+  .input-container {
+    flex-direction: column;
+    gap: 12px;
   }
   
   .button-group {
     flex-direction: row;
     justify-content: space-between;
+  }
+  
+  .menu-options {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .menu-button {
+    flex: 1;
+    max-width: 200px;
+  }
+  
+  .lobby-stats-header {
+    flex-direction: row;
+    gap: 12px;
+  }
+  
+  .lobby-stats {
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .player {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .choice-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet Devices (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .book-container {
+    padding: 20px;
+  }
+  
+  .open-book {
+    width: 90%;
+    max-width: 1000px;
+  }
+  
+  .book-pages {
+    flex-direction: row;
+  }
+  
+  .left-page, .right-page {
+    flex: 1;
+    height: auto;
+    min-height: 60vh;
+    padding: 25px;
+  }
+  
+  .menu-options {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .menu-button {
+    flex: 1;
+    max-width: 250px;
+  }
+  
+  .choice-options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Desktop and Large Screens (1025px+) */
+@media (min-width: 1025px) {
+  .book-container {
+    padding: 20px;
+  }
+  
+  .open-book {
+    width: 90%;
+    max-width: 1200px;
+  }
+  
+  .book-pages {
+    flex-direction: row;
+  }
+  
+  .left-page, .right-page {
+    flex: 1;
+    height: auto;
+    min-height: 60vh;
+    padding: 30px;
+  }
+  
+  .menu-options {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .menu-button {
+    flex: none;
+  }
+  
+  .choice-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Landscape Mobile Orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .book-container {
+    padding: 10px;
+  }
+  
+  .open-book {
+    min-height: 95vh;
+  }
+  
+  .book-pages {
+    flex-direction: row;
+    min-height: 85vh;
+  }
+  
+  .left-page, .right-page {
+    flex: 1;
+    height: auto;
+    min-height: 80vh;
+    padding: 15px;
+    border-right: 2px solid #DDD;
+    border-bottom: none;
+  }
+  
+  .left-page {
+    border-right: 2px solid #DDD;
+  }
+  
+  .right-page {
+    border-right: none;
+  }
+  
+  .game-header {
+    flex-direction: row;
+    padding: 10px 15px;
+  }
+  
+  .menu-options {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .menu-button {
+    flex: 1;
+    padding: 10px 20px;
+    font-size: 0.9em;
   }
 }

@@ -35,6 +35,14 @@ function LobbyRoom({ lobbyId, userId, username, onLeaveLobby }) {
     return () => clearInterval(interval);
   }, [lobbyId]);
 
+  // Handle mobile viewport
+  useEffect(() => {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    }
+  }, []);
+
   const toggleReady = async () => {
     try {
       const response = await fetch(`${API_URL}/lobby/ready`, {
