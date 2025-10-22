@@ -45,15 +45,15 @@ Step into a realm where your words shape worlds, your choices summon quests, and
 ## 🧩 **System Flow**
 
 ```mermaid
-graph TD
-A[Frontend (React)] -->|POST /story| B[Backend (Flask/FastAPI)]
-B --> C[Airia API]
-B --> D[OpenAI / Stack AI]
-B --> E[ElevenLabs Voice]
-C --> F[(AI Narrative)]
-D --> F
-E --> F
-F -->|Response JSON| A
+flowchart TD
+    A[Frontend (React)] --> B[Backend (Flask / FastAPI)]
+    B --> C[Airia API]
+    B --> D[OpenAI / Stack AI]
+    B --> E[ElevenLabs Voice]
+    C --> F[(AI Narrative)]
+    D --> F
+    E --> F
+    F --> A[Frontend (React)]
 ```
 
 ---
