@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/srirammadduri/Documents/Hackathons/Intercom17thOct/D&DAi/backend/venv"
+VIRTUAL_ENV="/Users/gauravhungund/D/DungeonForge/backend/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

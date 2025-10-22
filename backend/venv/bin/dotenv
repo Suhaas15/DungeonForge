@@ -1,4 +1,4 @@
-#!/Users/srirammadduri/Documents/Hackathons/Intercom17thOct/D&DAi/backend/venv/bin/python3
+#!/Users/gauravhungund/D/DungeonForge/backend/venv/bin/python3.14
 import sys
 from dotenv.__main__ import cli
 if __name__ == '__main__':
